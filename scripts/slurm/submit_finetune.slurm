@@ -35,7 +35,7 @@ srun torchrun \
     --output-dir $OUTPUT_DIR \
     --save-total-limit 2 \
     --save-steps 500 \
-    --max-steps 1000000 \
+    --max-steps 100000 \
     --use-wandb \
     --global-batch-size 128 \
     --dataloader-num-workers 4
