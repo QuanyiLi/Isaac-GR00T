@@ -4,11 +4,11 @@
 #SBATCH --partition=h100
 #SBATCH --qos=vita
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=64
+#SBATCH --cpus-per-task=16
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
 #SBATCH --time=24:00:00
-#SBATCH --mem=200G
+#SBATCH --mem=50G
 
 # Ensure logs directory exists
 mkdir -p logs
@@ -16,12 +16,13 @@ mkdir -p logs
 # Set the repository ID and local root path
 # Change these values as needed
 REPO_ID="nvidia/PhysicalAI-Robotics-GR00T-Teleop-GR1"
-ROOT_PATH="/root/Isaac-GR00T/data"
+ROOT_PATH="/work/vita/lanfeng/vlas/wise_dataset_0.4.3"
 
 echo "Starting conversion for repo: $REPO_ID"
 echo "Local root: $ROOT_PATH"
 
 python scripts/lerobot_conversion/convert_v3_to_v2.py \
+    --repo-id="merged_train" \
     --root "$ROOT_PATH"
 
 echo "Conversion finished."
