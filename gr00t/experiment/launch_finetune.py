@@ -54,6 +54,7 @@ if __name__ == "__main__":
     config.load_config_path = None
 
     # overwrite with finetune config supplied by the user
+    config.data.video_backend = ft_config.video_backend
     config.model.tune_llm = ft_config.tune_llm
     config.model.tune_visual = ft_config.tune_visual
     config.model.tune_projector = ft_config.tune_projector

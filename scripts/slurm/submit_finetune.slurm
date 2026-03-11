@@ -30,6 +30,7 @@ srun torchrun \
     --dataset-path $DATASET_PATH \
     --embodiment-tag NEW_EMBODIMENT \
     --modality-config-path /work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py \
+    --video-backend ffmpeg \
     --num-gpus 4 \
     --output-dir $OUTPUT_DIR \
     --save-total-limit 5 \
