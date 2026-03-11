@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=64
 #SBATCH --gpus-per-node=4
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --time=24:00:00
 #SBATCH --mem=200G
 
@@ -30,11 +30,11 @@ srun torchrun \
     --dataset-path $DATASET_PATH \
     --embodiment-tag NEW_EMBODIMENT \
     --modality-config-path /work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py \
-    --num-gpus 8 \
+    --num-gpus 4 \
     --output-dir $OUTPUT_DIR \
     --save-total-limit 5 \
     --save-steps 500 \
     --max-steps 10000 \
     --use-wandb \
-    --global-batch-size 256 \
+    --global-batch-size 128 \
     --dataloader-num-workers 4
