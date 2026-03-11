@@ -1,0 +1,64 @@
+#!/bin/bash
+#SBATCH --job-name=gr00t_eval
+#SBATCH --output=/home/lfeng/task_logs/%j.log
+#SBATCH --partition=h100
+#SBATCH --qos=vita
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=8
+#SBATCH --gpus-per-node=4
+#SBATCH --nodes=1
+#SBATCH --time=12:00:00
+#SBATCH --mem=100G
+
+# ============================================================
+# Evaluate fine-tuned GR00T N1.6 model on all 24 subsets
+# (train+test) using 4 GPUs on 1 H100 node.
+#
+# Results are organized identically to submit_pi0_eval.run:
+#   $RESULT_DIR/config_X_train/episode_metrics.json
+#   $RESULT_DIR/config_X_test/episode_metrics.json
+#   $RESULT_DIR/final_results_train.json
+#   $RESULT_DIR/final_results_test.json
+# ============================================================
+
+SCRIPT_PATH="/work/vita/lanfeng/vlas/Isaac-GR00T/scripts/eval/gr00t_eval.py"
+export PYTHONPATH="/work/vita/lanfeng/vlas/vla:$PYTHONPATH"
+export PYTHONPATH="/work/vita/lanfeng/vlas/Isaac-GR00T:$PYTHONPATH"
+RESULT_DIR="/work/vita/lanfeng/vlas/gr00t_eval_result"
+mkdir -p $RESULT_DIR
+
+# Path to the fine-tuned GR00T checkpoint (update this!)
+MODEL_PATH="/work/vita/lanfeng/vlas/exp_results/gr00t_finetune_XXXXXXXX_XXXXXX/checkpoint-XXXX"
+
+# Path to the modality config used during training
+MODALITY_CONFIG_PATH="/work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py"
+
+# Launch 4 processes, one per GPU, each handling 6 subsets
+for GPU_ID in 0 1 2 3; do
+    START=$((GPU_ID * 6))
+    END=$(((GPU_ID + 1) * 6))
+
+    CUDA_VISIBLE_DEVICES=$GPU_ID python $SCRIPT_PATH \
+        --model_path=$MODEL_PATH \
+        --modality_config_path=$MODALITY_CONFIG_PATH \
+        --start_subset=$START \
+        --end_subset=$END \
+        --split=both \
+        --result_dir=$RESULT_DIR \
+        --eval_rounds=1 \
+        > "${RESULT_DIR}/gpu_${GPU_ID}.log" 2>&1 &
+
+    echo "Launched GPU $GPU_ID: subsets $START to $((END - 1))"
+done
+
+echo "Waiting for all 4 GPU processes to finish..."
+wait
+echo "All rollouts complete."
+
+# Final aggregation
+echo "Running final aggregation..."
+python $SCRIPT_PATH \
+    --aggregate_only \
+    --result_dir=$RESULT_DIR
+
+echo "Done. Results in $RESULT_DIR"
