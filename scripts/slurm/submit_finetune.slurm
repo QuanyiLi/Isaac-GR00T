@@ -34,7 +34,7 @@ srun torchrun \
     --num-gpus 4 \
     --output-dir $OUTPUT_DIR \
     --save-total-limit 2 \
-    --save-steps 500 \
+    --save-steps 100 \
     --max-steps 100000 \
     --use-wandb \
     --global-batch-size 128 \
