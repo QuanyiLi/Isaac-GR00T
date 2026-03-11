@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=convert_v3_v2
-#SBATCH --output=logs/convert_%j.log
+#SBATCH --output=/home/lfeng/task_logs/%j.log
 #SBATCH --partition=h100
 #SBATCH --qos=vita
 #SBATCH --ntasks-per-node=1
@@ -22,7 +22,6 @@ echo "Starting conversion for repo: $REPO_ID"
 echo "Local root: $ROOT_PATH"
 
 python scripts/lerobot_conversion/convert_v3_to_v2.py \
-    --repo-id "$REPO_ID" \
     --root "$ROOT_PATH"
 
 echo "Conversion finished."
