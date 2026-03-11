@@ -20,7 +20,7 @@ export MASTER_PORT=29501
 # Launch the training using launch_finetune.py
 # This script automatically registers the modality config and sets fine-tuning defaults.
 srun torchrun \
-    --nnodes=2 \
+    --nnodes=1 \
     --nproc_per_node=4 \
     --rdzv_id=$SLURM_JOB_ID \
     --rdzv_backend=c10d \
