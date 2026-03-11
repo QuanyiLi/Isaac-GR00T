@@ -28,6 +28,6 @@
         }
     },
     "annotation": {
-        "annotation.human.action.task_description": {}
+        "human.action.task_description": {}
     }
 }
