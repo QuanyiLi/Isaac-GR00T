@@ -33,7 +33,7 @@ srun torchrun \
     --video-backend ffmpeg \
     --num-gpus 4 \
     --output-dir $OUTPUT_DIR \
-    --save-total-limit 5 \
+    --save-total-limit 2 \
     --save-steps 500 \
     --max-steps 10000 \
     --use-wandb \
