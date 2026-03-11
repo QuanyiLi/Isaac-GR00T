@@ -1,0 +1,33 @@
+{
+    "state": {
+        "joint_pos": {
+            "start": 0,
+            "end": 7
+        },
+        "gripper_pos": {
+            "start": 7,
+            "end": 9
+        }
+    },
+    "action": {
+        "joint_action": {
+            "start": 0,
+            "end": 7
+        },
+        "gripper_action": {
+            "start": 7,
+            "end": 8
+        }
+    },
+    "video": {
+        "image_1": {
+            "original_key": "observation.images.image_1"
+        },
+        "wrist_camera": {
+            "original_key": "observation.images.wrist_image"
+        }
+    },
+    "annotation": {
+        "annotation.human.action.task_description": {}
+    }
+}
