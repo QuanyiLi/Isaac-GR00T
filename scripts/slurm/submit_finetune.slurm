@@ -25,11 +25,11 @@ srun torchrun \
     --rdzv_id=$SLURM_JOB_ID \
     --rdzv_backend=c10d \
     --rdzv_endpoint=$MASTER_ADDR:$MASTER_PORT \
-    gr00t/experiment/launch_finetune.py \
+    /work/vita/lanfeng/vlas/Isaac-GR00T/gr00t/experiment/launch_finetune.py \
     --base-model-path nvidia/GR00T-N1.6-3B \
     --dataset-path $DATASET_PATH \
     --embodiment-tag NEW_EMBODIMENT \
-    --modality-config-path ../../modality_config.py \
+    --modality-config-path /work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py \
     --num-gpus 8 \
     --output-dir $OUTPUT_DIR \
     --save-total-limit 5 \
