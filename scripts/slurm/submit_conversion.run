@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH --job-name=convert_v3_v2
+#SBATCH --output=logs/convert_%j.log
+#SBATCH --partition=h100
+#SBATCH --qos=vita
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=64
+#SBATCH --gpus-per-node=1
+#SBATCH --nodes=1
+#SBATCH --time=24:00:00
+#SBATCH --mem=200G
+
+# Ensure logs directory exists
+mkdir -p logs
+
+# Set the repository ID and local root path
+# Change these values as needed
+REPO_ID="nvidia/PhysicalAI-Robotics-GR00T-Teleop-GR1"
+ROOT_PATH="/root/Isaac-GR00T/data"
+
+echo "Starting conversion for repo: $REPO_ID"
+echo "Local root: $ROOT_PATH"
+
+python scripts/lerobot_conversion/convert_v3_to_v2.py \
+    --repo-id "$REPO_ID" \
+    --root "$ROOT_PATH"
+
+echo "Conversion finished."
