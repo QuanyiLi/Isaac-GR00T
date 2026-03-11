@@ -398,6 +398,17 @@ def get_frames_by_indices(
         cap.release()
         frames = np.array(frames)
         return frames
+    elif video_backend == "pyav":
+        import av
+        with av.open(video_path) as container:
+            frames_dict = {}
+            idx_set = set(indices)
+            for i, frame in enumerate(container.decode(video=0)):
+                if i in idx_set:
+                    frames_dict[i] = frame.to_ndarray(format="rgb24")
+                if len(frames_dict) == len(idx_set):
+                    break
+            return np.stack([frames_dict[idx] for idx in indices])
     else:
         raise NotImplementedError
 
