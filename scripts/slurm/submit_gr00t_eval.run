@@ -3,16 +3,16 @@
 #SBATCH --output=/home/lfeng/task_logs/%j.log
 #SBATCH --partition=h100
 #SBATCH --qos=vita
-#SBATCH --ntasks-per-node=4
-#SBATCH --cpus-per-task=8
-#SBATCH --gpus-per-node=4
-#SBATCH --nodes=1
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=16
+#SBATCH --gpus-per-node=1
 #SBATCH --time=12:00:00
-#SBATCH --mem=100G
+#SBATCH --mem=50G
 
 # ============================================================
 # Evaluate fine-tuned GR00T N1.6 model on all 24 subsets
-# (train+test) using 4 GPUs on 1 H100 node.
+# (train+test) using 4 nodes, each with 1 H100 GPU.
 #
 # Results are organized identically to submit_pi0_eval.run:
 #   $RESULT_DIR/config_X_train/episode_metrics.json
@@ -33,27 +33,27 @@ MODEL_PATH="/work/vita/lanfeng/vlas/exp_results/gr00t_finetune_XXXXXXXX_XXXXXX/c
 # Path to the modality config used during training
 MODALITY_CONFIG_PATH="/work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py"
 
-# Launch 4 processes, one per GPU, each handling 6 subsets
-for GPU_ID in 0 1 2 3; do
-    START=$((GPU_ID * 6))
-    END=$(((GPU_ID + 1) * 6))
-
-    CUDA_VISIBLE_DEVICES=$GPU_ID python $SCRIPT_PATH \
+# Launch 4 nodes, one task each, each handling 6 subsets
+echo "Launching 4 evaluation tasks across 4 nodes..."
+srun bash -c "
+    PROC_ID=\$SLURM_PROCID
+    START=\$((PROC_ID * 6))
+    END=\$(((PROC_ID + 1) * 6))
+    
+    echo \"Task \$PROC_ID on \$(hostname): processing subsets \$START to \$((END - 1))\"
+    
+    python $SCRIPT_PATH \
         --model_path=$MODEL_PATH \
         --modality_config_path=$MODALITY_CONFIG_PATH \
-        --start_subset=$START \
-        --end_subset=$END \
+        --start_subset=\$START \
+        --end_subset=\$END \
         --split=both \
         --result_dir=$RESULT_DIR \
         --eval_rounds=1 \
-        > "${RESULT_DIR}/gpu_${GPU_ID}.log" 2>&1 &
+        > \"${RESULT_DIR}/gpu_\${PROC_ID}.log\" 2>&1
+"
 
-    echo "Launched GPU $GPU_ID: subsets $START to $((END - 1))"
-done
-
-echo "Waiting for all 4 GPU processes to finish..."
-wait
-echo "All rollouts complete."
+echo "All nodes have completed their rollouts."
 
 # Final aggregation
 echo "Running final aggregation..."
