@@ -514,6 +514,7 @@ class Gr00tN1d6Processor(BaseProcessor):
                 "random_rotation_angle",
                 "color_jitter_params",
                 "use_relative_action",
+                "max_action_horizon",
             ]
             for key in override_keys:
                 if key in kwargs:

@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=64
 #SBATCH --gpus-per-node=4
-#SBATCH --nodes=1
+#SBATCH --nodes=2
 #SBATCH --time=24:00:00
 #SBATCH --mem=200G
 
@@ -20,7 +20,7 @@ export MASTER_PORT=29501
 # Launch the training using launch_finetune.py
 # This script automatically registers the modality config and sets fine-tuning defaults.
 srun torchrun \
-    --nnodes=1 \
+    --nnodes=2 \
     --nproc_per_node=4 \
     --rdzv_id=$SLURM_JOB_ID \
     --rdzv_backend=c10d \
@@ -31,11 +31,11 @@ srun torchrun \
     --embodiment-tag NEW_EMBODIMENT \
     --modality-config-path /work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py \
     --video-backend pyav \
-    --num-gpus 4 \
+    --num-gpus 8 \
     --output-dir $OUTPUT_DIR \
     --save-total-limit 2 \
-    --save-steps 100 \
+    --save-steps 1000 \
     --max-steps 100000 \
     --use-wandb \
-    --global-batch-size 128 \
+    --global-batch-size 256 \
     --dataloader-num-workers 4
