@@ -34,10 +34,9 @@ modality_config = {
         action_configs=[
             # 7-dim joint action
             ActionConfig(
-                rep=ActionRepresentation.RELATIVE,
+                rep=ActionRepresentation.ABSOLUTE,
                 type=ActionType.NON_EEF,
                 format=ActionFormat.DEFAULT,
-                state_key="joint_pos",
             ),
             # 1-dim gripper action
             ActionConfig(
