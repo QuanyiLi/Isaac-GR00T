@@ -3,16 +3,16 @@
 #SBATCH --output=/home/lfeng/task_logs/%j.log
 #SBATCH --partition=h100
 #SBATCH --qos=vita
-#SBATCH --nodes=4
-#SBATCH --ntasks-per-node=1
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=16
-#SBATCH --gpus-per-node=1
+#SBATCH --gpus-per-node=4
 #SBATCH --time=12:00:00
 #SBATCH --mem=50G
 
 # ============================================================
 # Evaluate fine-tuned GR00T N1.6 model on all 24 subsets
-# (train+test) using 4 nodes, each with 1 H100 GPU.
+# (train+test) using 1 node with 4 H100 GPUs (4 tasks).
 #
 # Results are organized identically to submit_pi0_eval.run:
 #   $RESULT_DIR/config_X_train/episode_metrics.json
@@ -42,14 +42,15 @@ if [ "$SAVE_VIDEO" = true ]; then
     EXTRA_ARGS="$EXTRA_ARGS --save_video"
 fi
 
-# Launch 4 nodes, one task each, each handling 6 subsets
-echo "Launching 4 evaluation tasks across 4 nodes..."
+# Launch 4 tasks on 1 node, each handling 6 subsets
+echo "Launching 4 evaluation tasks on 1 node with 4 GPUs..."
 srun bash -c "
     PROC_ID=\$SLURM_PROCID
+    export CUDA_VISIBLE_DEVICES=\$PROC_ID
     START=\$((PROC_ID * 6))
     END=\$(((PROC_ID + 1) * 6))
     
-    echo \"Task \$PROC_ID on \$(hostname): processing subsets \$START to \$((END - 1))\"
+    echo \"Task \$PROC_ID on \$(hostname) [GPU \$PROC_ID]: processing subsets \$START to \$((END - 1))\"
     
     python $SCRIPT_PATH \
         --model_path=$MODEL_PATH \
