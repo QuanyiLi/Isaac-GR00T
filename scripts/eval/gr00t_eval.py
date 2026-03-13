@@ -255,7 +255,7 @@ def run_eval(args):
                     round_to_collect=args.eval_rounds,
                     demo_saving_dir=subset_result_dir,
                     debug_mode=True,
-                    indices_to_save=[],
+                    indices_to_save=None if args.save_video else [],
                 )
             elapsed = time.perf_counter() - start_time
 
@@ -303,6 +303,8 @@ def parse_args():
                         help="Number of evaluation rounds per subset")
     parser.add_argument("--aggregate_only", action="store_true",
                         help="Skip rollouts, only compute final aggregation")
+    parser.add_argument("--save_video", action="store_true",
+                        help="Save episode videos to each subset result directory")
     return parser.parse_args()
 
 

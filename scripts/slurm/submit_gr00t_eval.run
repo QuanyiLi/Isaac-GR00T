@@ -33,6 +33,15 @@ MODEL_PATH="/work/vita/lanfeng/vlas/exp_results/gr00t_finetune_XXXXXXXX_XXXXXX/c
 # Path to the modality config used during training
 MODALITY_CONFIG_PATH="/work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py"
 
+# Set to true to save episode videos alongside results
+SAVE_VIDEO=false
+
+# Build optional flags
+EXTRA_ARGS=""
+if [ "$SAVE_VIDEO" = true ]; then
+    EXTRA_ARGS="$EXTRA_ARGS --save_video"
+fi
+
 # Launch 4 nodes, one task each, each handling 6 subsets
 echo "Launching 4 evaluation tasks across 4 nodes..."
 srun bash -c "
@@ -50,6 +59,7 @@ srun bash -c "
         --split=both \
         --result_dir=$RESULT_DIR \
         --eval_rounds=1 \
+        $EXTRA_ARGS \
         > \"${RESULT_DIR}/gpu_\${PROC_ID}.log\" 2>&1
 "
 
