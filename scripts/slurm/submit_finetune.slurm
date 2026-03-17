@@ -34,8 +34,10 @@ srun torchrun \
     --num-gpus 8 \
     --output-dir $OUTPUT_DIR \
     --save-total-limit 2 \
-    --save-steps 1000 \
-    --max-steps 100000 \
+    --save-steps 2000 \
+    --max-steps 20000 \
     --use-wandb \
-    --global-batch-size 256 \
-    --dataloader-num-workers 4
+    --global-batch-size 640 \
+    --dataloader-num-workers 4 \
+    --color-jitter-params brightness 0.3 contrast 0.4 saturation 0.5 hue 0.08 \
+    --state-dropout-prob 0.8

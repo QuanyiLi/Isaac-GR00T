@@ -32,9 +32,9 @@ modality_config = {
             "gripper_action",
         ],
         action_configs=[
-            # 7-dim joint action
+            # 7-dim joint action (RELATIVE aligns with N1.6 pretraining)
             ActionConfig(
-                rep=ActionRepresentation.ABSOLUTE,
+                rep=ActionRepresentation.RELATIVE,
                 type=ActionType.NON_EEF,
                 format=ActionFormat.DEFAULT,
             ),
