@@ -39,6 +39,5 @@ srun torchrun \
     --max-steps 40000 \
     --global-batch-size 960 \
     --dataloader-num-workers 4 \
-    --color-jitter-params brightness 0.3 contrast 0.4 saturation 0.5 hue 0.08 \
     --state-dropout-prob 0
 
