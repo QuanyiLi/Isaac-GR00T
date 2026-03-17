@@ -135,7 +135,7 @@ def main():
     from gr00t.data.embodiment_tags import EmbodimentTag
     from gr00t.data.types import MessageType
 
-    embodiment_tag = EmbodimentTag(args.embodiment_tag)
+    embodiment_tag = EmbodimentTag[args.embodiment_tag]
 
     # ── 2. Build config exactly like launch_finetune.py ──
     config = get_default_config().load_dict({
