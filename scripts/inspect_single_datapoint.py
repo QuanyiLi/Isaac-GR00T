@@ -159,7 +159,7 @@ def main():
     config.model.state_dropout_prob = 0.0  # no dropout for inspection
     config.model.color_jitter_params = None  # no jitter for inspection
 
-    modality_configs = config.data.modality_configs[args.embodiment_tag]
+    modality_configs = config.data.modality_configs[embodiment_tag.value]
 
     # ── 3. Load a single episode via LeRobotEpisodeLoader ──
     print(f"\n{'='*60}")
