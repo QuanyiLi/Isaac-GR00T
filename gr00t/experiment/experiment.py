@@ -263,6 +263,8 @@ def run(config: Config):
                 processor=processor,
                 modality_config=modality_config,
                 embodiment_tag=embodiment_tag,
+                modality_config_path=inline_cfg["modality_config_path"],
+                output_dir=str(output_dir),
                 num_envs=inline_cfg.get("num_envs", 12),
                 eval_rounds=inline_cfg.get("eval_rounds", 1),
             )
