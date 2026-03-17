@@ -91,4 +91,14 @@ if __name__ == "__main__":
     config.data.num_shards_per_epoch = ft_config.num_shards_per_epoch
     config.data.override_pretraining_statistics = True
 
+    # Inline evaluation config — stored on config for experiment.py to pick up
+    config.inline_eval = {
+        "enabled": ft_config.enable_inline_eval,
+        "modality_config_path": ft_config.modality_config_path,
+        "embodiment_tag": ft_config.embodiment_tag,
+        "num_envs": ft_config.inline_eval_envs,
+        "eval_rounds": ft_config.inline_eval_rounds,
+    }
+
     run(config)
+

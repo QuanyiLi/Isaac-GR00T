@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=64
 #SBATCH --gpus-per-node=4
-#SBATCH --nodes=2
+#SBATCH --nodes=3
 #SBATCH --time=24:00:00
 #SBATCH --mem=200G
 
@@ -16,11 +16,12 @@ OUTPUT_DIR="/work/vita/lanfeng/vlas/exp_results/gr00t_finetune_$(date +%Y%m%d_%H
 
 export MASTER_ADDR=$(scontrol show hostnames $SLURM_JOB_NODELIST | head -n 1)
 export MASTER_PORT=29501
+export PYTHONPATH="/work/vita/lanfeng/vlas/vla:$PYTHONPATH"
 
 # Launch the training using launch_finetune.py
 # This script automatically registers the modality config and sets fine-tuning defaults.
 srun torchrun \
-    --nnodes=2 \
+    --nnodes=3 \
     --nproc_per_node=4 \
     --rdzv_id=$SLURM_JOB_ID \
     --rdzv_backend=c10d \
@@ -31,13 +32,15 @@ srun torchrun \
     --embodiment-tag NEW_EMBODIMENT \
     --modality-config-path /work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py \
     --video-backend pyav \
-    --num-gpus 8 \
+    --num-gpus 12 \
     --output-dir $OUTPUT_DIR \
     --save-total-limit 2 \
     --save-steps 2000 \
     --max-steps 20000 \
     --use-wandb \
-    --global-batch-size 640 \
+    --global-batch-size 960 \
     --dataloader-num-workers 4 \
     --color-jitter-params brightness 0.3 contrast 0.4 saturation 0.5 hue 0.08 \
-    --state-dropout-prob 0.8
+    --state-dropout-prob 0.8 \
+    --enable-inline-eval
+

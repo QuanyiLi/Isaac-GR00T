@@ -247,6 +247,29 @@ def run(config: Config):
             )
         )
 
+    # Inline simulation evaluation callback
+    if hasattr(config, "inline_eval") and config.inline_eval.get("enabled", False):
+        from gr00t.experiment.inline_eval_callback import InlineEvalCallback
+
+        inline_cfg = config.inline_eval
+        embodiment_tag = inline_cfg["embodiment_tag"]
+
+        # Get the modality config for this embodiment from the processor
+        modality_configs = processor.get_modality_configs()
+        modality_config = modality_configs[embodiment_tag.value]
+
+        trainer.add_callback(
+            InlineEvalCallback(
+                processor=processor,
+                modality_config=modality_config,
+                embodiment_tag=embodiment_tag,
+                num_envs=inline_cfg.get("num_envs", 12),
+                eval_rounds=inline_cfg.get("eval_rounds", 1),
+            )
+        )
+        logging.info("InlineEvalCallback registered for config_0 train+test evaluation")
+
+
     if hasattr(train_dataset, "get_initial_actions"):
         initial_actions = train_dataset.get_initial_actions()
         if initial_actions:

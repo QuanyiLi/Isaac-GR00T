@@ -119,3 +119,13 @@ class FinetuneConfig:
 
     num_shards_per_epoch: int = int(1e5)
     """Number of shards to use for the dataset. reduce this number if vram is limited."""
+
+    enable_inline_eval: bool = False
+    """If True, run simulation evaluation on config_0 (train+test) before training and at each checkpoint save."""
+
+    inline_eval_envs: int = 12
+    """Number of parallel simulation environments for inline evaluation."""
+
+    inline_eval_rounds: int = 1
+    """Number of evaluation rounds per split for inline evaluation."""
+
