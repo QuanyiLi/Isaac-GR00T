@@ -37,8 +37,7 @@ srun torchrun \
     --save-total-limit 2 \
     --save-steps 2000 \
     --max-steps 20000 \
-    --use-wandb \
-    --global-batch-size 960 \
+    --global-batch-size 768 \
     --dataloader-num-workers 4 \
     --color-jitter-params brightness 0.3 contrast 0.4 saturation 0.5 hue 0.08 \
     --state-dropout-prob 0.8 \
