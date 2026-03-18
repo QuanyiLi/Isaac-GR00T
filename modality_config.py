@@ -37,6 +37,7 @@ modality_config = {
                 rep=ActionRepresentation.RELATIVE,
                 type=ActionType.NON_EEF,
                 format=ActionFormat.DEFAULT,
+                state_key="joint_pos",
             ),
             # gripper_action: absolute (binary-like signal)
             ActionConfig(
