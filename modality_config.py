@@ -26,7 +26,7 @@ modality_config = {
         ],
     ),
     "action": ModalityConfig(
-        delta_indices=list(range(0, 50)),
+        delta_indices=list(range(0, 40)),
         modality_keys=[
             "joint_action",
             "gripper_action",
