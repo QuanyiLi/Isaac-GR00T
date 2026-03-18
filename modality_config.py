@@ -15,7 +15,6 @@ modality_config = {
         delta_indices=[0],
         modality_keys=[
             "image_1",
-            "wrist_camera",
         ],
     ),
     "state": ModalityConfig(
