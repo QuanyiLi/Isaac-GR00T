@@ -36,10 +36,17 @@ MODALITY_CONFIG_PATH="/work/vita/lanfeng/vlas/Isaac-GR00T/modality_config.py"
 # Set to true to save episode videos alongside results
 SAVE_VIDEO=false
 
+# Replanning frequency: re-infer every N steps.
+# Leave empty to default to the action chunk size.
+REPLAN_FREQ=""
+
 # Build optional flags
 EXTRA_ARGS=""
 if [ "$SAVE_VIDEO" = true ]; then
     EXTRA_ARGS="$EXTRA_ARGS --save_video"
+fi
+if [ -n "$REPLAN_FREQ" ]; then
+    EXTRA_ARGS="$EXTRA_ARGS --replan_freq=$REPLAN_FREQ"
 fi
 
 # Launch 4 tasks on 1 node, each handling 6 subsets

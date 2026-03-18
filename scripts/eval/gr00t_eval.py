@@ -109,14 +109,16 @@ def env_obs_to_groot(obs, modality_config):
 # GR00T policy wrapper for the rollout() function
 # ---------------------------------------------------------------------------
 
-def make_groot_policy_fn(policy, modality_config, action_horizon, device):
+def make_groot_policy_fn(policy, modality_config, action_horizon, device, replan_freq=None):
     """
     Create a callable that matches the signature expected by rollout():
         policy_fn(obs) -> (action_to_take, expert_action, info_dict)
 
-    Uses chunked action execution: infer once, execute all `action_horizon`
-    actions, then re-infer.
+    Uses chunked action execution: infer once, execute `replan_freq`
+    actions (default: action_horizon), then re-infer.
     """
+    if replan_freq is None:
+        replan_freq = action_horizon
     action_buffer = []  # list of (B, action_dim) numpy arrays
 
     def forward(obs):
@@ -139,7 +141,7 @@ def make_groot_policy_fn(policy, modality_config, action_horizon, device):
 
             # Fill the action buffer with per-step actions
             T_action = all_actions.shape[1]
-            steps_to_use = min(T_action, action_horizon)
+            steps_to_use = min(T_action, action_horizon, replan_freq)
             for t in range(steps_to_use):
                 action_buffer.append(all_actions[:, t, :])  # (B, action_dim)
 
@@ -198,7 +200,8 @@ def run_eval(args):
     logger.info(f"Modality config: {modality_config}")
 
     action_horizon = len(modality_config["action"].delta_indices)
-    logger.info(f"Action horizon (chunk size): {action_horizon}")
+    replan_freq = args.replan_freq if args.replan_freq is not None else action_horizon
+    logger.info(f"Action horizon (chunk size): {action_horizon}, Replan frequency: {replan_freq}")
 
     # Determine splits to evaluate
     splits = ["train", "test"] if args.split == "both" else [args.split]
@@ -239,7 +242,8 @@ def run_eval(args):
 
             # Wrap GR00T policy for rollout
             wrapped = make_groot_policy_fn(
-                policy, modality_config, action_horizon, device=envs.device
+                policy, modality_config, action_horizon, device=envs.device,
+                replan_freq=replan_freq,
             )
 
             # Rollout
@@ -305,6 +309,8 @@ def parse_args():
                         help="Skip rollouts, only compute final aggregation")
     parser.add_argument("--save_video", action="store_true",
                         help="Save episode videos to each subset result directory")
+    parser.add_argument("--replan_freq", type=int, default=None,
+                        help="Re-infer every N steps (default: action chunk size)")
     return parser.parse_args()
 
 
